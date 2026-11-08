@@ -1,4 +1,4 @@
-package com.example.candybaradventure
+package com.kuznix.candybar.adventure
 
 import android.annotation.SuppressLint
 import android.os.Bundle

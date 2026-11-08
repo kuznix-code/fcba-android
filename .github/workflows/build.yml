@@ -1,5 +1,11 @@
 name: Build APK
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,7 +16,19 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: 8.7 }
       - run: gradle assembleDebug
+      - name: Name universal APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk CandyBarAdventure-universal.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: CandyBarAdventure-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: CandyBarAdventure-universal-apk
+          path: CandyBarAdventure-universal.apk
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          cp CandyBarAdventure-universal.apk "CandyBarAdventure-${VER}-universal.apk"
+          gh release create "$GITHUB_REF_NAME" "CandyBarAdventure-${VER}-universal.apk" \
+            --title "Candy Bar Adventure $VER" \
+            --notes "First release. Universal APK (arm64-v8a, armeabi-v7a, x86, x86_64). Package: com.kuznix.candybar.adventure"
