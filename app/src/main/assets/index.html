@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>html,body{margin:0;height:100%;background:#000;overflow:hidden}#p{width:100%;height:100%}
+#bar{position:fixed;top:8px;right:8px;display:flex;gap:8px;z-index:9;opacity:.55}
+#bar button{width:44px;height:44px;border:0;border-radius:22px;background:#222;color:#fff;font-size:20px}
+#bar button:active{background:#555}</style>
+<script>window.RufflePlayer={config:{publicPath:"/assets/ruffle/",autoplay:"on",unmuteOverlay:"hidden",letterbox:"on",splashScreen:false,contextMenu:"off",warnOnUnsupportedContent:false}};</script>
+<script src="/assets/ruffle/ruffle.js"></script>
+</head><body><div id="p"></div>
+<div id="bar"><button id="restart" aria-label="Restart">&#8635;</button><button id="pause" aria-label="Pause">&#10074;&#10074;</button><button id="mute" aria-label="Mute">&#128266;</button></div>
+<script>
+window.addEventListener("load",()=>{
+  const r=window.RufflePlayer.newest(),pl=r.createPlayer();
+  pl.style.width="100%";pl.style.height="100%";
+  document.getElementById("p").appendChild(pl);
+  pl.load("/assets/game.swf");
+  let paused=false,muted=false;
+  const $=id=>document.getElementById(id);
+  $("restart").onclick=()=>{pl.load("/assets/game.swf");paused=false;$("pause").innerHTML="&#10074;&#10074;";};
+  $("pause").onclick=()=>{paused=!paused;paused?pl.pause():pl.play();$("pause").innerHTML=paused?"&#9654;":"&#10074;&#10074;";};
+  $("mute").onclick=()=>{muted=!muted;pl.volume=muted?0:1;$("mute").innerHTML=muted?"&#128263;":"&#128266;";};
+});
+</script></body></html>
